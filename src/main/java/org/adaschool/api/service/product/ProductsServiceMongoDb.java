@@ -20,30 +20,51 @@ public class ProductsServiceMongoDb implements ProductsService {
 
     @Override
     public Product save(Product product) {
-        //TODO implement this method
-        return null;
+        if (product.getId() == null || product.getName() == null) {
+            System.out.println("Por favor, ingrese id y nombre del producto validos");
+        }
+        Product entitySaved = this.productMongoRepository.save(product);
+        return entitySaved;
     }
 
     @Override
     public Optional<Product> findById(String id) {
-        //TODO implement this method
-        return Optional.empty();
+        Optional<Product> productOptional = this.productMongoRepository.findById(id);
+        if (productOptional.isEmpty()) {
+            System.out.println("No se encontro ningun producto con el ID: " + id);
+        }
+        return productOptional;
     }
 
     @Override
     public List<Product> all() {
-        //TODO implement this method
-        return null;
+        return this.productMongoRepository.findAll();
     }
 
     @Override
     public void deleteById(String id) {
-        //TODO implement this method
+        Optional<Product> productOptional = this.productMongoRepository.findById(id);
+        if (productOptional.isEmpty()) {
+            System.out.println("No se encontro ningun producto con el ID: " + id);
+        }
+        productMongoRepository.deleteById(id);
+        System.out.println("Producto con ID: " + id + " eliminado correctamente");
     }
 
     @Override
     public Product update(Product product, String productId) {
-        //TODO implement this method
-        return null;
+        Optional<Product> productOptional = this.productMongoRepository.findById(productId);
+        if (productOptional.isEmpty()) {
+            System.out.println("No se encontro ningun producto con el ID: " + productId);
+            return null;
+        }
+        Product updatedProduct = productOptional.get();
+        updatedProduct.setName(product.getName());
+        updatedProduct.setDescription(product.getDescription());
+        updatedProduct.setCategory(product.getCategory());
+        updatedProduct.setTags(product.getTags());
+        updatedProduct.setPrice(product.getPrice());
+        updatedProduct.setImageUrl(product.getImageUrl());
+        return this.productMongoRepository.save(updatedProduct);
     }
 }

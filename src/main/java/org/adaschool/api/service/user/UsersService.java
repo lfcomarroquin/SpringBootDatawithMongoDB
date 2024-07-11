@@ -16,4 +16,3 @@ public interface UsersService {
 
     User update(User user, String userId);
 }
-

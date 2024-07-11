@@ -20,30 +20,51 @@ public class UsersServiceMongoDb implements UsersService {
 
     @Override
     public User save(User user) {
-        //TODO implement this method
-        return null;
+        if (user.getName() == null || user.getLastName() == null|| user.getEmail() == null) {
+            System.out.println("Por favor, ingrese nombre, apellido e email valido");
+        }
+        User entitySaved = this.userMongoRepository.save(user);
+        System.out.println("El usuario ha sido creado con exito");
+        return entitySaved;
     }
 
     @Override
     public Optional<User> findById(String id) {
-        //TODO implement this method
-        return Optional.empty();
+        Optional<User> userOptional = this.userMongoRepository.findById(id);
+        if (userOptional.isEmpty()){
+            System.out.println("No se encontro ningun usuario con el ID: " + id);
+        }
+        return userOptional;
     }
 
     @Override
     public List<User> all() {
-        //TODO implement this method
-        return null;
+        return this.userMongoRepository.findAll();
     }
 
     @Override
     public void deleteById(String id) {
-        //TODO implement this method
+        Optional<User> userOptional = this.userMongoRepository.findById(id);
+        if (userOptional.isEmpty()){
+            System.out.println("No se encontro ningun usuario con el ID: " + id);
+        }
+        userMongoRepository.deleteById(id);
+        System.out.println("Usuario con ID: " + id + " eliminado correctamente");
     }
 
     @Override
     public User update(User user, String userId) {
-        //TODO implement this method
-        return null;
+        Optional<User> userOptional = this.userMongoRepository.findById(userId);
+        if (userOptional.isEmpty()){
+            System.out.println("No se encontro ningun usuario con el ID: " + userId);
+            return null;
+        }
+        User updatedUser = userOptional.get();
+        updatedUser.setName(user.getName());
+        updatedUser.setLastName(user.getLastName());
+        updatedUser.setEmail(user.getEmail());
+        User updatedUserEntity = this.userMongoRepository.save(updatedUser);
+        System.out.println("Usuario con ID: " + userId + " modificado correctamente");
+        return updatedUserEntity;
     }
 }
